@@ -1,3 +1,4 @@
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -13,5 +14,11 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
 
-  printf("%s\n", filename);
+  DIR *dir = opendir(foldername);
+
+  // it is actually a file
+  if (dir == NULL) {
+    printf("%s\n", foldername);
+    exit(0);
+  }
 }
