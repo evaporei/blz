@@ -21,4 +21,12 @@ int main(int argc, char* argv[]) {
     printf("%s\n", foldername);
     exit(0);
   }
+
+  struct dirent *entry;
+
+  while ((entry = readdir(dir)) != NULL) {
+    printf("%s ", entry->d_name);
+  }
+
+  printf("\n");
 }
