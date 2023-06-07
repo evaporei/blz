@@ -25,7 +25,9 @@ int main(int argc, char* argv[]) {
   struct dirent *entry;
 
   while ((entry = readdir(dir)) != NULL) {
-    printf("%s ", entry->d_name);
+    if (entry->d_name[0] != '.') {
+      printf("%s ", entry->d_name);
+    }
   }
 
   printf("\n");
