@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 int main(int argc, char* argv[]) {
   char* foldername;
@@ -27,7 +28,41 @@ int main(int argc, char* argv[]) {
 
   while ((entry = readdir(dir)) != NULL) {
     if (entry->d_name[0] != '.') {
-      printf("%s ", entry->d_name);
+      // print file name itself
+      printf("%s", entry->d_name);
+
+      // print file type suffix
+      switch (entry->d_type) {
+        case DT_DIR:
+          printf("/");
+          break;
+        case DT_FIFO:
+          printf("|");
+          break;
+        case DT_LNK:
+          printf("@");
+          break;
+        case DT_REG:
+          struct stat file_stat;
+
+          if (stat(entry->d_name, &file_stat) != 0) {
+            perror("Failed to get file status");
+            exit(errno);
+          }
+
+          // file is executable
+          if (file_stat.st_mode & S_IXUSR) {
+            printf("*");
+          }
+
+          break;
+        case DT_SOCK:
+          printf("=");
+          break;
+      }
+
+      // space in between files
+      printf(" ");
     }
   }
 
