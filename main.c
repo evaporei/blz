@@ -1,4 +1,5 @@
 #include <dirent.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,4 +32,10 @@ int main(int argc, char* argv[]) {
   }
 
   printf("\n");
+
+  int close_res = closedir(dir);
+
+  if (close_res < 0) {
+    exit(errno);
+  }
 }
