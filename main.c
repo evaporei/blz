@@ -69,9 +69,6 @@ int main(int argc, char* argv[]) {
         continue;
       }
 
-      // print file name itself
-      printf("%s", entry->d_name);
-
       char *full_path;
 
       if (strcmp(foldernames[i], ".") != 0) {
@@ -104,6 +101,9 @@ int main(int argc, char* argv[]) {
       free(full_path);
 
       total_blocks += (file_stat.st_blocks * 512) / 1024;
+
+      // print file name itself
+      printf("%s", entry->d_name);
 
       // print file type suffix
       switch (entry->d_type) {
