@@ -94,7 +94,6 @@ int main(int argc, char* argv[]) {
 
       if (stat(full_path, &file_stat) != 0) {
         /* printf("\nfull_path: %s\n", full_path); */
-        free(full_path);
         perror("blz: failed to get file status (stat)");
       } else {
         total_blocks += (file_stat.st_blocks * 512) / 1024;
