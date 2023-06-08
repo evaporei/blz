@@ -100,6 +100,9 @@ int main(int argc, char* argv[]) {
         total_blocks += (file_stat.st_blocks * 512) / 1024;
 
         if (flag_long_list_fmt) {
+          // print file size
+          printf("%*lld ", sizeof(file_stat.st_size), file_stat.st_size);
+
           // get and format date of the last modification
           time_t mod_time = file_stat.st_mtime;
           struct tm *time_info = localtime(&mod_time);
