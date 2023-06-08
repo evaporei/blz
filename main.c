@@ -38,6 +38,8 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < argc; i++) {
     DIR *dir = opendir(foldernames[i]);
 
+    // TODO: this can fail if file doesn't exist. It should check before `opendir`
+    //
     // it is actually a file
     if (dir == NULL) {
       printf("%s\n", foldernames[i]);
