@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
           flag_long_list_fmt = true;
           break;
         default:
-          printf("warning: unknown flag '-%c'\n", arg[1]);
+          printf("blz: (warning) unknown flag '-%c'\n", arg[1]);
           break;
       }
     } else {
@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
       if (stat(full_path, &file_stat) != 0) {
         /* printf("\nfull_path: %s\n", full_path); */
         free(full_path);
-        perror("Failed to get file status (stat)");
+        perror("blz: failed to get file status (stat)");
       }
 
       free(full_path);
@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
     int close_res = closedir(dir);
 
     if (close_res < 0) {
-      perror("Failed to close directory (closedir)");
+      perror("blz: failed to close directory (closedir)");
     }
   }
 }
