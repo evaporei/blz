@@ -79,6 +79,11 @@ int main(int argc, char* argv[]) {
 
         full_path = malloc(strlen(foldernames[i]) + !has_trailing_slash + strlen(entry->d_name) + 1);
 
+        if (full_path == NULL) {
+          perror("blz: memory allocation error (full_path)");
+          // perhaps crash program, tho cleanup should be in mind (eg: closedir)
+        }
+
         strcpy(full_path, foldernames[i]);
         if (!has_trailing_slash) {
           strcat(full_path, "/");
