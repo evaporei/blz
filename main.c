@@ -96,11 +96,11 @@ int main(int argc, char* argv[]) {
         /* printf("\nfull_path: %s\n", full_path); */
         free(full_path);
         perror("blz: failed to get file status (stat)");
+      } else {
+        total_blocks += (file_stat.st_blocks * 512) / 1024;
       }
 
       free(full_path);
-
-      total_blocks += (file_stat.st_blocks * 512) / 1024;
 
       // print file name itself
       printf("%s", entry->d_name);
