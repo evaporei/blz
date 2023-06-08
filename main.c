@@ -121,7 +121,6 @@ int main(int argc, char* argv[]) {
           if (file_stat.st_mode & S_IXUSR) {
             printf("*");
           }
-
           break;
         case DT_SOCK:
           printf("=");
