@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 int main(int argc, char* argv[]) {
   char **foldernames;
@@ -44,10 +45,13 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < argc; i++) {
     unsigned long long total_blocks = 0;
 
+    if (access(foldernames[i], F_OK) != 0) {
+      fprintf(stderr, "blz: cannot access '%s': No such file or directory\n", foldernames[i]);
+      continue;
+    }
+
     DIR *dir = opendir(foldernames[i]);
 
-    // TODO: this can fail if file doesn't exist. It should check before `opendir`
-    //
     // it is actually a file
     if (dir == NULL) {
       printf("%s\n", foldernames[i]);
