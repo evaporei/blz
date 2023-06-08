@@ -1,6 +1,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <grp.h>
+#include <pwd.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -101,6 +102,15 @@ int main(int argc, char* argv[]) {
         total_blocks += (file_stat.st_blocks * 512) / 1024;
 
         if (flag_long_list_fmt) {
+          struct passwd *pwd = getpwuid(file_stat.st_uid);
+
+          // print user name (owner)
+          if (pwd != NULL) {
+            printf("%s ", pwd->pw_name);
+          } else {
+            printf("(unknown) ");
+          }
+
           struct group *grp = getgrgid(file_stat.st_gid);
 
           // print group name
