@@ -79,9 +79,6 @@ int main(int argc, char* argv[]) {
 
         full_path = malloc(strlen(foldernames[i]) + !has_trailing_slash + strlen(entry->d_name) + 1);
 
-        /* printf("foldernames[i]: %s\n", foldernames[i]); */
-        /* printf("entry->d_name: %s\n", entry->d_name); */
-
         strcpy(full_path, foldernames[i]);
         if (!has_trailing_slash) {
           strcat(full_path, "/");
@@ -96,7 +93,6 @@ int main(int argc, char* argv[]) {
       struct stat file_stat;
 
       if (stat(full_path, &file_stat) != 0) {
-        /* printf("\nfull_path: %s\n", full_path); */
         perror("blz: failed to get file status (stat)");
       } else {
         total_blocks += (file_stat.st_blocks * 512) / 1024;
