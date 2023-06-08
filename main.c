@@ -102,6 +102,9 @@ int main(int argc, char* argv[]) {
         total_blocks += (file_stat.st_blocks * 512) / 1024;
 
         if (flag_long_list_fmt) {
+          // print number of hard links
+          printf("%*lld ", sizeof(file_stat.st_nlink), file_stat.st_nlink);
+
           struct passwd *pwd = getpwuid(file_stat.st_uid);
 
           // print user name (owner)
