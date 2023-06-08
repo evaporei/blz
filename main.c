@@ -1,5 +1,6 @@
 #include <dirent.h>
 #include <errno.h>
+#include <grp.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -100,6 +101,15 @@ int main(int argc, char* argv[]) {
         total_blocks += (file_stat.st_blocks * 512) / 1024;
 
         if (flag_long_list_fmt) {
+          struct group *grp = getgrgid(file_stat.st_gid);
+
+          // print group name
+          if (grp != NULL) {
+            printf("%s ", grp->gr_name);
+          } else {
+            printf("(unknown) ");
+          }
+
           // print file size
           printf("%*lld ", sizeof(file_stat.st_size), file_stat.st_size);
 
