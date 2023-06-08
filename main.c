@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <unistd.h>
 
 int main(int argc, char* argv[]) {
@@ -97,6 +98,18 @@ int main(int argc, char* argv[]) {
         perror("blz: failed to get file status (stat)");
       } else {
         total_blocks += (file_stat.st_blocks * 512) / 1024;
+
+        if (flag_long_list_fmt) {
+          // get and format date of the last modification
+          time_t mod_time = file_stat.st_mtime;
+          struct tm *time_info = localtime(&mod_time);
+
+          char time_str[20];
+          strftime(time_str, sizeof(time_str), "%b %e %H:%M", time_info);
+
+          // print date of the last modification
+          printf("%s ", time_str);
+        }
       }
 
       free(full_path);
