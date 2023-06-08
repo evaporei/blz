@@ -13,31 +13,32 @@ int main(int argc, char* argv[]) {
   // to show detailed data from each file and folder (permissions, size, etc)
   bool flag_long_list_fmt = false;
 
-  if (argc == 1) {
-    foldernames[0] = ".";
-  } else {
-    int i;
-    for (i = 1; i < argc; i++) {
-      const char *arg = argv[i];
-      if (arg[0] == '-') {
-        switch (arg[1]) {
-          case 'a':
-            flag_all = true;
-            break;
-          case 'l':
-            flag_long_list_fmt = true;
-            break;
-          default:
-            printf("warning: unknown flag '-%c'\n", arg[1]);
-            break;
-        }
-      } else {
-        // folder/file names instead of flags
-        break;
+  int i;
+  for (i = 1; i < argc; i++) {
+    const char *arg = argv[i];
+    if (arg[0] == '-') {
+      switch (arg[1]) {
+        case 'a':
+          flag_all = true;
+          break;
+        case 'l':
+          flag_long_list_fmt = true;
+          break;
+        default:
+          printf("warning: unknown flag '-%c'\n", arg[1]);
+          break;
       }
+    } else {
+      // folder/file names instead of flags
+      break;
     }
-    foldernames = &argv[i];
-    argc -= i;
+  }
+  foldernames = &argv[i];
+  argc -= i;
+
+  if (argc == 0) {
+    foldernames[0] = ".";
+    argc = 1;
   }
 
   for (int i = 0; i < argc; i++) {
