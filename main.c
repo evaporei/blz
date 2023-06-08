@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 
 int main(int argc, char* argv[]) {
-  char **foldernames = argv;
+  char **foldernames;
   // to show dot files/folders
   bool flag_all = false;
 
