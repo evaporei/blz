@@ -95,6 +95,7 @@ int main(int argc, char* argv[]) {
 
   if (results == NULL) {
     perror("blz: memory allocation error (results)");
+    exit(1);
   }
 
   // get the data using sys/lib calls
@@ -105,6 +106,7 @@ int main(int argc, char* argv[]) {
 
       if (results == NULL) {
         perror("blz: memory reallocation error (results)");
+        exit(1);
       }
     }
 
@@ -149,6 +151,7 @@ int main(int argc, char* argv[]) {
 
     if (dir_entries->entries == NULL) {
       perror("blz: memory allocation error (dir_entries->entries)");
+      exit(1);
     }
 
     struct dirent *entry;
@@ -160,6 +163,7 @@ int main(int argc, char* argv[]) {
 
         if (dir_entries->entries == NULL) {
           perror("blz: memory reallocation error (dir_entries->entries)");
+          exit(1);
         }
       }
 
@@ -186,7 +190,7 @@ int main(int argc, char* argv[]) {
 
         if (full_path == NULL) {
           perror("blz: memory allocation error 1 (full_path)");
-          // perhaps crash program, tho cleanup should be in mind (eg: closedir)
+          exit(1);
         }
 
         strcpy(full_path, foldernames[i]);
@@ -200,7 +204,7 @@ int main(int argc, char* argv[]) {
 
         if (full_path == NULL) {
           perror("blz: memory allocation error 2 (full_path)");
-          // perhaps crash program, tho cleanup should be in mind (eg: closedir)
+          exit(1);
         }
 
         strcpy(full_path, entry->d_name);
