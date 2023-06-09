@@ -10,5 +10,5 @@ For computer science class.
 - `-l`
   - [x] show total number of blocks for the directory
   - [x] show all data about each file found (permissions, links, owner, group, size, last modified and name)
-- [ ] print files in alphabetic order
+- [x] print files in alphabetic order
 - [ ] add color support
