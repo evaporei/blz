@@ -171,6 +171,7 @@ int main(int argc, char* argv[]) {
         continue;
       }
 
+      // copy entry data to avoid corruption issues
       struct LocalEntry *local_entry = malloc(sizeof(struct LocalEntry));
 
       local_entry->d_type = entry->d_type;
