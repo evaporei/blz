@@ -10,6 +10,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "types.h"
+
 #define RESULTS_INIT_CAPACITY 2
 #define ENTRIES_INIT_CAPACITY 16
 
