@@ -54,6 +54,12 @@ struct EntryResult {
   struct Error *err;
 };
 
+int compare_entries(const void *a, const void *b) {
+  struct EntryWithStat *entry_a = (struct EntryWithStat *) a;
+  struct EntryWithStat *entry_b = (struct EntryWithStat *) b;
+  return strcmp(entry_a->entry->d_name, entry_b->entry->d_name);
+}
+
 int main(int argc, char* argv[]) {
   char **foldernames;
   // to show dot files/folders
@@ -226,6 +232,9 @@ int main(int argc, char* argv[]) {
 
       dir_entries->ent_len++;
     }
+
+    // order/sort entries
+    qsort(dir_entries->entries, dir_entries->ent_len, sizeof(struct EntryWithStat), compare_entries);
 
     results[res_len].dir_entries = dir_entries;
     results[res_len].filename = NULL;
