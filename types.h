@@ -1,6 +1,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <stdbool.h>
+
 enum ErrKind {
   NoEntity = 1 // ENOENT
 };
@@ -53,6 +55,12 @@ struct Flags {
   bool all; // -a
   // to show detailed data from each file and folder (permissions, size, etc)
   bool long_list_fmt; // -l
+};
+
+struct Args {
+  char **foldernames;
+  int folders_len; // number of folders
+  struct Flags flags;
 };
 
 #endif

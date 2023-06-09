@@ -2,7 +2,6 @@
 #include <errno.h>
 #include <grp.h>
 #include <pwd.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,6 +9,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "cli.h"
 #include "types.h"
 
 #define RESULTS_INIT_CAPACITY 2
@@ -22,39 +22,7 @@ int compare_entries(const void *a, const void *b) {
 }
 
 int main(int argc, char* argv[]) {
-  char **foldernames;
-  struct Flags flags = {
-    .all = false,
-    .long_list_fmt = false
-  };
-
-  int i;
-  for (i = 1; i < argc; i++) {
-    const char *arg = argv[i];
-    if (arg[0] == '-') {
-      switch (arg[1]) {
-        case 'a':
-          flags.all = true;
-          break;
-        case 'l':
-          flags.long_list_fmt = true;
-          break;
-        default:
-          printf("blz: (warning) unknown flag '-%c'\n", arg[1]);
-          break;
-      }
-    } else {
-      // folder/file names instead of flags
-      break;
-    }
-  }
-  foldernames = &argv[i];
-  argc -= i;
-
-  if (argc == 0) {
-    foldernames[0] = ".";
-    argc = 1;
-  }
+  struct Args args = parse_args(argc, argv);
 
   struct ResultList results;
 
@@ -68,7 +36,7 @@ int main(int argc, char* argv[]) {
   }
 
   // get the data using sys/lib calls
-  for (int i = 0; i < argc; i++) {
+  for (int i = 0; i < args.folders_len; i++) {
     if (results.len >= results.cap) {
       results.cap *= 2;
       results.items = realloc(results.items, results.cap * sizeof(struct EntryResult));
@@ -79,10 +47,10 @@ int main(int argc, char* argv[]) {
       }
     }
 
-    if (access(foldernames[i], F_OK) != 0) {
+    if (access(args.foldernames[i], F_OK) != 0) {
       char *msg_template = "blz: cannot access '%s': No such file or directory";
-      char *msg = malloc((strlen(msg_template) + strlen(foldernames[i]) - 1) * sizeof(char));
-      sprintf(msg, msg_template, foldernames[i]);
+      char *msg = malloc((strlen(msg_template) + strlen(args.foldernames[i]) - 1) * sizeof(char));
+      sprintf(msg, msg_template, args.foldernames[i]);
 
       struct Error *err = malloc(sizeof(struct Error));
       err->msg = msg;
@@ -95,7 +63,7 @@ int main(int argc, char* argv[]) {
       continue;
     }
 
-    DIR *dir = opendir(foldernames[i]);
+    DIR *dir = opendir(args.foldernames[i]);
 
     // it is actually a file
     if (dir == NULL) {
@@ -103,8 +71,8 @@ int main(int argc, char* argv[]) {
       // though this allocation/copy is not necessary
       // I left it so that all fields from the big struct
       // have to be freed.
-      results.items[results.len].filename = malloc(strlen(foldernames[i]) * sizeof(char));
-      strcpy(results.items[results.len].filename, foldernames[i]);
+      results.items[results.len].filename = malloc(strlen(args.foldernames[i]) * sizeof(char));
+      strcpy(results.items[results.len].filename, args.foldernames[i]);
       results.items[results.len].err = NULL;
       results.len++;
       continue;
@@ -112,7 +80,7 @@ int main(int argc, char* argv[]) {
 
     struct DirEntries *dir_entries = malloc(sizeof(struct DirEntries));
 
-    dir_entries->foldername = foldernames[i];
+    dir_entries->foldername = args.foldernames[i];
     dir_entries->total_blocks = 0;
     dir_entries->ent_len = 0;
     dir_entries->ent_cap = ENTRIES_INIT_CAPACITY;
@@ -136,7 +104,7 @@ int main(int argc, char* argv[]) {
         }
       }
 
-      if (entry->d_name[0] == '.' && !flags.all) {
+      if (entry->d_name[0] == '.' && !args.flags.all) {
         continue;
       }
 
@@ -152,9 +120,9 @@ int main(int argc, char* argv[]) {
 
       char *full_path;
 
-      if (strcmp(foldernames[i], ".") != 0) {
-        int has_trailing_slash = foldernames[i][strlen(foldernames[i]) - 1] == '/';
-        int full_path_len = (strlen(foldernames[i]) + !has_trailing_slash + strlen(entry->d_name) + 1);
+      if (strcmp(args.foldernames[i], ".") != 0) {
+        int has_trailing_slash = args.foldernames[i][strlen(args.foldernames[i]) - 1] == '/';
+        int full_path_len = (strlen(args.foldernames[i]) + !has_trailing_slash + strlen(entry->d_name) + 1);
 
         full_path = malloc(full_path_len * sizeof(char));
 
@@ -163,7 +131,7 @@ int main(int argc, char* argv[]) {
           exit(1);
         }
 
-        strcpy(full_path, foldernames[i]);
+        strcpy(full_path, args.foldernames[i]);
         if (!has_trailing_slash) {
           strcat(full_path, "/");
         }
@@ -216,7 +184,7 @@ int main(int argc, char* argv[]) {
     if (results.items[i].dir_entries != NULL) {
       struct DirEntries *dir_entries = results.items[i].dir_entries;
 
-      if (flags.long_list_fmt) {
+      if (args.flags.long_list_fmt) {
         if (results.len > 1) {
           printf("%s:\n", dir_entries->foldername);
         }
@@ -228,7 +196,7 @@ int main(int argc, char* argv[]) {
         struct LocalEntry *entry = entry_with_stat->entry;
         struct stat *stat = entry_with_stat->stat;
 
-        if (flags.long_list_fmt) {
+        if (args.flags.long_list_fmt) {
           // print file permissions
           printf(S_ISDIR(stat->st_mode) ? "d" : "-");
           printf(stat->st_mode & S_IRUSR ? "r" : "-");
@@ -301,14 +269,14 @@ int main(int argc, char* argv[]) {
             break;
         }
 
-        if (flags.long_list_fmt) {
+        if (args.flags.long_list_fmt) {
           printf("\n");
         } else {
           printf(" ");
         }
       }
 
-      if (!flags.long_list_fmt) {
+      if (!args.flags.long_list_fmt) {
         printf("\n");
       }
     }
