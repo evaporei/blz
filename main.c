@@ -54,6 +54,12 @@ struct EntryResult {
   struct Error *err;
 };
 
+struct ResultList {
+  struct EntryResult *items;
+  int len;
+  int cap;
+};
+
 int compare_entries(const void *a, const void *b) {
   struct EntryWithStat *entry_a = (struct EntryWithStat *) a;
   struct EntryWithStat *entry_b = (struct EntryWithStat *) b;
@@ -95,23 +101,25 @@ int main(int argc, char* argv[]) {
     argc = 1;
   }
 
-  int res_len = 0;
-  int res_cap = RESULTS_INIT_CAPACITY;
-  struct EntryResult *results = malloc(res_cap * sizeof(struct EntryResult));
+  struct ResultList results;
 
-  if (results == NULL) {
-    perror("blz: memory allocation error (results)");
+  results.len = 0;
+  results.cap = RESULTS_INIT_CAPACITY;
+  results.items = malloc(results.cap * sizeof(struct EntryResult));
+
+  if (results.items == NULL) {
+    perror("blz: memory allocation error (list.items)");
     exit(1);
   }
 
   // get the data using sys/lib calls
   for (int i = 0; i < argc; i++) {
-    if (res_len >= res_cap) {
-      res_cap *= 2;
-      results = realloc(results, res_cap * sizeof(struct EntryResult));
+    if (results.len >= results.cap) {
+      results.cap *= 2;
+      results.items = realloc(results.items, results.cap * sizeof(struct EntryResult));
 
-      if (results == NULL) {
-        perror("blz: memory reallocation error (results)");
+      if (results.items == NULL) {
+        perror("blz: memory reallocation error (results.items)");
         exit(1);
       }
     }
@@ -125,10 +133,10 @@ int main(int argc, char* argv[]) {
       err->msg = msg;
       err->kind = NoEntity;
 
-      results[res_len].dir_entries = NULL;
-      results[res_len].filename = NULL;
-      results[res_len].err = err;
-      res_len++;
+      results.items[results.len].dir_entries = NULL;
+      results.items[results.len].filename = NULL;
+      results.items[results.len].err = err;
+      results.len++;
       continue;
     }
 
@@ -136,14 +144,14 @@ int main(int argc, char* argv[]) {
 
     // it is actually a file
     if (dir == NULL) {
-      results[res_len].dir_entries = NULL;
+      results.items[results.len].dir_entries = NULL;
       // though this allocation/copy is not necessary
       // I left it so that all fields from the big struct
       // have to be freed.
-      results[res_len].filename = malloc(strlen(foldernames[i]) * sizeof(char));
-      strcpy(results[res_len].filename, foldernames[i]);
-      results[res_len].err = NULL;
-      res_len++;
+      results.items[results.len].filename = malloc(strlen(foldernames[i]) * sizeof(char));
+      strcpy(results.items[results.len].filename, foldernames[i]);
+      results.items[results.len].err = NULL;
+      results.len++;
       continue;
     }
 
@@ -236,10 +244,10 @@ int main(int argc, char* argv[]) {
     // order/sort entries
     qsort(dir_entries->entries, dir_entries->ent_len, sizeof(struct EntryWithStat), compare_entries);
 
-    results[res_len].dir_entries = dir_entries;
-    results[res_len].filename = NULL;
-    results[res_len].err = NULL;
-    res_len++;
+    results.items[results.len].dir_entries = dir_entries;
+    results.items[results.len].filename = NULL;
+    results.items[results.len].err = NULL;
+    results.len++;
 
     int close_res = closedir(dir);
 
@@ -249,12 +257,12 @@ int main(int argc, char* argv[]) {
   }
 
   // print gathered data
-  for (int i = 0; i < res_len; i++) {
-    if (results[i].dir_entries != NULL) {
-      struct DirEntries *dir_entries = results[i].dir_entries;
+  for (int i = 0; i < results.len; i++) {
+    if (results.items[i].dir_entries != NULL) {
+      struct DirEntries *dir_entries = results.items[i].dir_entries;
 
       if (flag_long_list_fmt) {
-        if (res_len > 1) {
+        if (results.len > 1) {
           printf("%s:\n", dir_entries->foldername);
         }
         printf("total: %llu\n", dir_entries->total_blocks);
@@ -350,19 +358,19 @@ int main(int argc, char* argv[]) {
       }
     }
 
-    if (results[i].filename != NULL) {
-      printf("%s\n", results[i].filename);
+    if (results.items[i].filename != NULL) {
+      printf("%s\n", results.items[i].filename);
     }
 
-    if (results[i].err != NULL) {
-      printf("%s\n", results[i].err->msg);
+    if (results.items[i].err != NULL) {
+      printf("%s\n", results.items[i].err->msg);
     }
   }
 
   // free data
-  for (int i = 0; i < res_len; i++) {
-    if (results[i].dir_entries != NULL) {
-      struct DirEntries *dir_entries = results[i].dir_entries;
+  for (int i = 0; i < results.len; i++) {
+    if (results.items[i].dir_entries != NULL) {
+      struct DirEntries *dir_entries = results.items[i].dir_entries;
 
       for (int j = 0; j < dir_entries->ent_len; j++) {
         struct EntryWithStat *entry_with_stat = &(dir_entries->entries[j]);
@@ -376,15 +384,15 @@ int main(int argc, char* argv[]) {
       free(dir_entries);
     }
 
-    if (results[i].filename != NULL) {
-      free(results[i].filename);
+    if (results.items[i].filename != NULL) {
+      free(results.items[i].filename);
     }
 
-    if (results[i].err != NULL) {
-      free(results[i].err->msg);
-      free(results[i].err);
+    if (results.items[i].err != NULL) {
+      free(results.items[i].err->msg);
+      free(results.items[i].err);
     }
   }
 
-  free(results);
+  free(results.items);
 }
