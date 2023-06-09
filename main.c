@@ -15,53 +15,6 @@
 #define RESULTS_INIT_CAPACITY 2
 #define ENTRIES_INIT_CAPACITY 16
 
-enum ErrKind {
-  NoEntity = 1 // ENOENT
-};
-
-struct Error {
-  char *msg;
-  enum ErrKind kind;
-};
-
-// this struct only exists because stupid `readdir`
-// doesn't give owned data to us, only references to
-// static data
-//
-// and since it can do anything with its static data,
-// sometimes this `ls` was printing corrupted file names
-// etc
-struct LocalEntry {
-  unsigned char d_type;
-  char *d_name;
-};
-
-struct EntryWithStat {
-  struct LocalEntry *entry;
-  struct stat *stat; // can be None
-};
-
-struct DirEntries {
-  char *foldername;
-  unsigned long long total_blocks;
-  struct EntryWithStat *entries;
-  int ent_len;
-  int ent_cap;
-};
-
-/* either a dir_entries list, a file name or an error */
-struct EntryResult {
-  struct DirEntries *dir_entries;
-  char *filename;
-  struct Error *err;
-};
-
-struct ResultList {
-  struct EntryResult *items;
-  int len;
-  int cap;
-};
-
 int compare_entries(const void *a, const void *b) {
   struct EntryWithStat *entry_a = (struct EntryWithStat *) a;
   struct EntryWithStat *entry_b = (struct EntryWithStat *) b;
@@ -70,10 +23,10 @@ int compare_entries(const void *a, const void *b) {
 
 int main(int argc, char* argv[]) {
   char **foldernames;
-  // to show dot files/folders
-  bool flag_all = false;
-  // to show detailed data from each file and folder (permissions, size, etc)
-  bool flag_long_list_fmt = false;
+  struct Flags flags = {
+    .all = false,
+    .long_list_fmt = false
+  };
 
   int i;
   for (i = 1; i < argc; i++) {
@@ -81,10 +34,10 @@ int main(int argc, char* argv[]) {
     if (arg[0] == '-') {
       switch (arg[1]) {
         case 'a':
-          flag_all = true;
+          flags.all = true;
           break;
         case 'l':
-          flag_long_list_fmt = true;
+          flags.long_list_fmt = true;
           break;
         default:
           printf("blz: (warning) unknown flag '-%c'\n", arg[1]);
@@ -183,7 +136,7 @@ int main(int argc, char* argv[]) {
         }
       }
 
-      if (entry->d_name[0] == '.' && !flag_all) {
+      if (entry->d_name[0] == '.' && !flags.all) {
         continue;
       }
 
@@ -263,7 +216,7 @@ int main(int argc, char* argv[]) {
     if (results.items[i].dir_entries != NULL) {
       struct DirEntries *dir_entries = results.items[i].dir_entries;
 
-      if (flag_long_list_fmt) {
+      if (flags.long_list_fmt) {
         if (results.len > 1) {
           printf("%s:\n", dir_entries->foldername);
         }
@@ -275,7 +228,7 @@ int main(int argc, char* argv[]) {
         struct LocalEntry *entry = entry_with_stat->entry;
         struct stat *stat = entry_with_stat->stat;
 
-        if (flag_long_list_fmt) {
+        if (flags.long_list_fmt) {
           // print file permissions
           printf(S_ISDIR(stat->st_mode) ? "d" : "-");
           printf(stat->st_mode & S_IRUSR ? "r" : "-");
@@ -348,14 +301,14 @@ int main(int argc, char* argv[]) {
             break;
         }
 
-        if (flag_long_list_fmt) {
+        if (flags.long_list_fmt) {
           printf("\n");
         } else {
           printf(" ");
         }
       }
 
-      if (!flag_long_list_fmt) {
+      if (!flags.long_list_fmt) {
         printf("\n");
       }
     }

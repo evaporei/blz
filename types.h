@@ -48,4 +48,11 @@ struct ResultList {
   int cap;
 };
 
+struct Flags {
+  // to show dot files/folders
+  bool all; // -a
+  // to show detailed data from each file and folder (permissions, size, etc)
+  bool long_list_fmt; // -l
+};
+
 #endif
