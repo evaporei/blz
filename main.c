@@ -10,7 +10,6 @@
 #include "dir_entries.h"
 #include "entry_with_stat.h"
 #include "result_list.h"
-#include "string.h"
 #include "types.h"
 
 int main(int argc, char* argv[]) {
@@ -55,19 +54,7 @@ int main(int argc, char* argv[]) {
         continue;
       }
 
-      struct EntryWithStat entry_with_stat;
-
-      struct LocalEntry *local_entry = entry_new(entry);
-
-      entry_with_stat.entry = local_entry;
-
-      char *full_path = str_path_cat(args.foldernames[i], entry->d_name);
-
-      struct stat *file_stat = stat_new(full_path);
-
-      entry_with_stat.stat = file_stat;
-
-      free(full_path);
+      struct EntryWithStat entry_with_stat = entry_with_stat_new(args.foldernames[i], entry);
 
       dir_entries_append(dir_entries, entry_with_stat);
     }

@@ -9,6 +9,8 @@ struct LocalEntry * entry_new(struct dirent *entry);
 
 struct stat * stat_new(char *full_path);
 
+struct EntryWithStat entry_with_stat_new(char *arg_foldername, struct dirent *entry);
+
 int compare_entries(const void *a, const void *b);
 
 #endif

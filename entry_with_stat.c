@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 
 #include "types.h"
+#include "string.h"
 
 // copy entry data to avoid corruption issues
 //
@@ -42,6 +43,24 @@ struct stat * stat_new(char *full_path) {
   }
 
   return file_stat;
+}
+
+struct EntryWithStat entry_with_stat_new(char *arg_foldername, struct dirent *entry) {
+  struct EntryWithStat entry_with_stat;
+
+  struct LocalEntry *local_entry = entry_new(entry);
+
+  entry_with_stat.entry = local_entry;
+
+  char *full_path = str_path_cat(arg_foldername, entry->d_name);
+
+  struct stat *file_stat = stat_new(full_path);
+
+  free(full_path);
+
+  entry_with_stat.stat = file_stat;
+
+  return entry_with_stat;
 }
 
 // used for qsort in dir_entries
