@@ -8,6 +8,7 @@
 
 #include "cli.h"
 #include "dir_entries.h"
+#include "entry_with_stat.h"
 #include "result_list.h"
 #include "types.h"
 
@@ -61,13 +62,7 @@ int main(int argc, char* argv[]) {
 
       struct EntryWithStat entry_with_stat;
 
-      // copy entry data to avoid corruption issues
-      struct LocalEntry *local_entry = malloc(sizeof(struct LocalEntry));
-
-      local_entry->d_type = entry->d_type;
-      local_entry->d_name = malloc((strlen(entry->d_name) + 1) * sizeof(char));
-      strcpy(local_entry->d_name, entry->d_name);
-      local_entry->d_name[strlen(entry->d_name)] = '\0';
+      struct LocalEntry *local_entry = entry_new(entry);
 
       entry_with_stat.entry = local_entry;
 
