@@ -39,10 +39,8 @@ int main(int argc, char* argv[]) {
       err->msg = msg;
       err->kind = NoEntity;
 
-      results.items[results.len].dir_entries = NULL;
-      results.items[results.len].filename = NULL;
-      results.items[results.len].err = err;
-      results.len++;
+      result_list_append_err(&results, err);
+
       continue;
     }
 

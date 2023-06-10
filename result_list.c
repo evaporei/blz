@@ -30,3 +30,10 @@ void result_list_grow(struct ResultList *results) {
     }
   }
 }
+
+void result_list_append_err(struct ResultList *results, struct Error *err) {
+  results->items[results->len].dir_entries = NULL;
+  results->items[results->len].filename = NULL;
+  results->items[results->len].err = err;
+  results->len++;
+}
