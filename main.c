@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "cli.h"
+#include "args.h"
 #include "dir_entries.h"
 #include "entry_with_stat.h"
 #include "error.h"

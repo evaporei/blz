@@ -1,7 +1,7 @@
 #ifndef DIR_ENTRIES_H
 #define DIR_ENTRIES_H
 
-#include "cli.h"
+#include "args.h"
 #include "entry_with_stat.h"
 
 #define ENTRIES_INIT_CAPACITY 16

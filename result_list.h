@@ -1,7 +1,7 @@
 #ifndef RESULT_LIST_H
 #define RESULT_LIST_H
 
-#include "cli.h"
+#include "args.h"
 #include "dir_entries.h"
 #include "error.h"
 

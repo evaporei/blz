@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "cli.h"
+#include "args.h"
 
 struct Args parse_args(int argc, char* argv[]) {
   struct Flags flags = {

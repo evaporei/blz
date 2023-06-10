@@ -1,5 +1,5 @@
-#ifndef CLI_H
-#define CLI_H
+#ifndef ARGS_H
+#define ARGS_H
 
 #include <stdbool.h>
 

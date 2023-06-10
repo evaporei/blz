@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <time.h>
 
-#include "cli.h"
+#include "args.h"
 #include "entry_with_stat.h"
 #include "string.h"
 

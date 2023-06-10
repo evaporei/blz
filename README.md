@@ -18,7 +18,7 @@ For computer science class.
 To compile (it may be outdated):
 
 ```bash
-cc -g cli.c dir_entries.c entry_with_stat.c error.c result_list.c string.c main.c
+cc -g args.c dir_entries.c entry_with_stat.c error.c result_list.c string.c main.c
 ```
 
 To run:
