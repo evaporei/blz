@@ -73,9 +73,9 @@ void result_list_print(struct ResultList results, struct Args args) {
       }
 
       for (int j = 0; j < dir_entries->ent_len; j++) {
-        struct EntryWithStat *entry_with_stat = &(dir_entries->entries[j]);
-        struct LocalEntry *entry = entry_with_stat->entry;
-        struct stat *stat = entry_with_stat->stat;
+        struct EntryWithStat entry_with_stat = dir_entries->entries[j];
+        struct LocalEntry *entry = entry_with_stat.entry;
+        struct stat *stat = entry_with_stat.stat;
 
         if (args.flags.long_list_fmt) {
           // print file permissions
