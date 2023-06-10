@@ -9,6 +9,7 @@
 #include "cli.h"
 #include "dir_entries.h"
 #include "entry_with_stat.h"
+#include "error.h"
 #include "result_list.h"
 #include "types.h"
 
@@ -22,13 +23,7 @@ int main(int argc, char* argv[]) {
     result_list_grow(&results);
 
     if (access(args.foldernames[i], F_OK) != 0) {
-      char *msg_template = "blz: cannot access '%s': No such file or directory";
-      char *msg = malloc((strlen(msg_template) + strlen(args.foldernames[i]) - 1) * sizeof(char));
-      sprintf(msg, msg_template, args.foldernames[i]);
-
-      struct Error *err = malloc(sizeof(struct Error));
-      err->msg = msg;
-      err->kind = NoEntity;
+      struct Error *err = error_new(args.foldernames[i]);
 
       result_list_append_err(&results, err);
 
