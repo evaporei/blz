@@ -7,10 +7,9 @@
 #include <unistd.h>
 
 #include "cli.h"
+#include "dir_entries.h"
 #include "result_list.h"
 #include "types.h"
-
-#define ENTRIES_INIT_CAPACITY 16
 
 int compare_entries(const void *a, const void *b) {
   struct EntryWithStat *entry_a = (struct EntryWithStat *) a;
@@ -49,18 +48,7 @@ int main(int argc, char* argv[]) {
       continue;
     }
 
-    struct DirEntries *dir_entries = malloc(sizeof(struct DirEntries));
-
-    dir_entries->foldername = args.foldernames[i];
-    dir_entries->total_blocks = 0;
-    dir_entries->ent_len = 0;
-    dir_entries->ent_cap = ENTRIES_INIT_CAPACITY;
-    dir_entries->entries = malloc(dir_entries->ent_cap * sizeof(struct EntryWithStat));
-
-    if (dir_entries->entries == NULL) {
-      perror("blz: memory allocation error (dir_entries->entries)");
-      exit(1);
-    }
+    struct DirEntries *dir_entries = dir_entries_new(args.foldernames[i]);
 
     struct dirent *entry;
 
@@ -151,32 +139,5 @@ int main(int argc, char* argv[]) {
   result_list_print(results, args);
 
   // free data
-  for (int i = 0; i < results.len; i++) {
-    if (results.items[i].dir_entries != NULL) {
-      struct DirEntries *dir_entries = results.items[i].dir_entries;
-
-      for (int j = 0; j < dir_entries->ent_len; j++) {
-        struct EntryWithStat *entry_with_stat = &(dir_entries->entries[j]);
-        struct LocalEntry *entry = entry_with_stat->entry;
-        struct stat *stat = entry_with_stat->stat;
-
-        free(entry->d_name);
-        free(entry);
-        free(stat);
-      }
-
-      free(dir_entries);
-    }
-
-    if (results.items[i].filename != NULL) {
-      free(results.items[i].filename);
-    }
-
-    if (results.items[i].err != NULL) {
-      free(results.items[i].err->msg);
-      free(results.items[i].err);
-    }
-  }
-
-  free(results.items);
+  result_list_free(results);
 }

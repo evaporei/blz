@@ -17,4 +17,6 @@ void result_list_append_err(struct ResultList *results, struct Error *err);
 
 void result_list_print(struct ResultList results, struct Args args);
 
+void result_list_free(struct ResultList results);
+
 #endif

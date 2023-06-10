@@ -170,3 +170,34 @@ void result_list_print(struct ResultList results, struct Args args) {
     }
   }
 }
+
+void result_list_free(struct ResultList results) {
+  for (int i = 0; i < results.len; i++) {
+    if (results.items[i].dir_entries != NULL) {
+      struct DirEntries *dir_entries = results.items[i].dir_entries;
+
+      for (int j = 0; j < dir_entries->ent_len; j++) {
+        struct EntryWithStat *entry_with_stat = &(dir_entries->entries[j]);
+        struct LocalEntry *entry = entry_with_stat->entry;
+        struct stat *stat = entry_with_stat->stat;
+
+        free(entry->d_name);
+        free(entry);
+        free(stat);
+      }
+
+      free(dir_entries);
+    }
+
+    if (results.items[i].filename != NULL) {
+      free(results.items[i].filename);
+    }
+
+    if (results.items[i].err != NULL) {
+      free(results.items[i].err->msg);
+      free(results.items[i].err);
+    }
+  }
+
+  free(results.items);
+}
