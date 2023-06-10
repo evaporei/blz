@@ -10,6 +10,7 @@
 #include "dir_entries.h"
 #include "entry_with_stat.h"
 #include "result_list.h"
+#include "string.h"
 #include "types.h"
 
 int compare_entries(const void *a, const void *b) {
@@ -66,36 +67,7 @@ int main(int argc, char* argv[]) {
 
       entry_with_stat.entry = local_entry;
 
-      char *full_path;
-
-      if (strcmp(args.foldernames[i], ".") != 0) {
-        int has_trailing_slash = args.foldernames[i][strlen(args.foldernames[i]) - 1] == '/';
-        int full_path_len = (strlen(args.foldernames[i]) + !has_trailing_slash + strlen(entry->d_name) + 1);
-
-        full_path = malloc(full_path_len * sizeof(char));
-
-        if (full_path == NULL) {
-          perror("blz: memory allocation error 1 (full_path)");
-          exit(1);
-        }
-
-        strcpy(full_path, args.foldernames[i]);
-        if (!has_trailing_slash) {
-          strcat(full_path, "/");
-        }
-        strcat(full_path, entry->d_name);
-        full_path[full_path_len - 1] = '\0';
-      } else {
-        full_path = malloc((strlen(entry->d_name) + 1) * sizeof(char));
-
-        if (full_path == NULL) {
-          perror("blz: memory allocation error 2 (full_path)");
-          exit(1);
-        }
-
-        strcpy(full_path, entry->d_name);
-        full_path[strlen(entry->d_name)] = '\0';
-      }
+      char *full_path = str_path_cat(args.foldernames[i], entry->d_name);
 
       struct stat *file_stat = stat_new(full_path);
 
