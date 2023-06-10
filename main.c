@@ -48,14 +48,7 @@ int main(int argc, char* argv[]) {
 
     // it is actually a file
     if (dir == NULL) {
-      results.items[results.len].dir_entries = NULL;
-      // though this allocation/copy is not necessary
-      // I left it so that all fields from the big struct
-      // have to be freed.
-      results.items[results.len].filename = malloc(strlen(args.foldernames[i]) * sizeof(char));
-      strcpy(results.items[results.len].filename, args.foldernames[i]);
-      results.items[results.len].err = NULL;
-      results.len++;
+      result_list_append_filename(&results, args.foldernames[i]);
       continue;
     }
 

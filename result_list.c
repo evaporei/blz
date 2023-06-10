@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "result_list.h"
 #include "types.h"
@@ -29,6 +30,14 @@ void result_list_grow(struct ResultList *results) {
       exit(1);
     }
   }
+}
+
+void result_list_append_filename(struct ResultList *results, char *filename) {
+  results->items[results->len].dir_entries = NULL;
+  results->items[results->len].filename = malloc(strlen(filename) * sizeof(char));
+  strcpy(results->items[results->len].filename, filename);
+  results->items[results->len].err = NULL;
+  results->len++;
 }
 
 void result_list_append_err(struct ResultList *results, struct Error *err) {
