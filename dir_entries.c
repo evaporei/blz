@@ -20,3 +20,15 @@ struct DirEntries * dir_entries_new(char *foldername) {
 
   return dir_entries;
 }
+
+void dir_entries_grow(struct DirEntries *dir_entries) {
+  if (dir_entries->ent_len >= dir_entries->ent_cap) {
+    dir_entries->ent_cap *= 2;
+    dir_entries->entries = realloc(dir_entries->entries, dir_entries->ent_cap * sizeof(struct EntryWithStat));
+
+    if (dir_entries->entries == NULL) {
+      perror("blz: memory reallocation error (dir_entries->entries)");
+      exit(1);
+    }
+  }
+}

@@ -53,15 +53,7 @@ int main(int argc, char* argv[]) {
     struct dirent *entry;
 
     while ((entry = readdir(dir)) != NULL) {
-      if (dir_entries->ent_len >= dir_entries->ent_cap) {
-        dir_entries->ent_cap *= 2;
-        dir_entries->entries = realloc(dir_entries->entries, dir_entries->ent_cap * sizeof(struct EntryWithStat));
-
-        if (dir_entries->entries == NULL) {
-          perror("blz: memory reallocation error (dir_entries->entries)");
-          exit(1);
-        }
-      }
+      dir_entries_grow(dir_entries);
 
       if (entry->d_name[0] == '.' && !args.flags.all) {
         continue;

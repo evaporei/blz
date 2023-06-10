@@ -5,4 +5,6 @@
 
 struct DirEntries * dir_entries_new(char *foldername);
 
+void dir_entries_grow(struct DirEntries *dir_entries);
+
 #endif
