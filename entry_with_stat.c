@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "types.h"
 
@@ -30,4 +31,15 @@ struct LocalEntry * entry_new(struct dirent *entry) {
   local_entry->d_name[strlen(entry->d_name)] = '\0';
 
   return local_entry;
+}
+
+struct stat * stat_new(char *full_path) {
+  struct stat *file_stat = malloc(sizeof(struct stat));
+
+  if (stat(full_path, file_stat) != 0) {
+    perror("blz: failed to get file status (stat)");
+    return NULL;
+  }
+
+  return file_stat;
 }

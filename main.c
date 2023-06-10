@@ -97,14 +97,9 @@ int main(int argc, char* argv[]) {
         full_path[strlen(entry->d_name)] = '\0';
       }
 
-      struct stat *file_stat = malloc(sizeof(struct stat));
+      struct stat *file_stat = stat_new(full_path);
 
-      if (stat(full_path, file_stat) != 0) {
-        perror("blz: failed to get file status (stat)");
-        entry_with_stat.stat = NULL;
-      } else {
-        entry_with_stat.stat = file_stat;
-      }
+      entry_with_stat.stat = file_stat;
 
       free(full_path);
 
