@@ -37,3 +37,21 @@ void dir_entries_append(struct DirEntries *dir_entries, struct EntryWithStat ent
   dir_entries->entries[dir_entries->ent_len] = entry_with_stat;
   dir_entries->ent_len++;
 }
+
+void dir_entries_free(struct DirEntries *dir_entries) {
+  for (int j = 0; j < dir_entries->ent_len; j++) {
+    struct EntryWithStat entry_with_stat = dir_entries->entries[j];
+    struct LocalEntry *entry = entry_with_stat.entry;
+    struct stat *stat = entry_with_stat.stat;
+
+    free(entry->d_name);
+    free(entry);
+    free(stat);
+  }
+
+  // // no need to free because this is coming from argv
+  // // free(): invalid pointer
+  // free(dir_entries->foldername);
+  free(dir_entries->entries);
+  free(dir_entries);
+}

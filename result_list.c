@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <time.h>
 
+#include "dir_entries.h"
 #include "result_list.h"
 #include "types.h"
 
@@ -176,20 +177,7 @@ void result_list_free(struct ResultList results) {
     if (results.items[i].dir_entries != NULL) {
       struct DirEntries *dir_entries = results.items[i].dir_entries;
 
-      for (int j = 0; j < dir_entries->ent_len; j++) {
-        struct EntryWithStat entry_with_stat = dir_entries->entries[j];
-        struct LocalEntry *entry = entry_with_stat.entry;
-        struct stat *stat = entry_with_stat.stat;
-
-        free(entry->d_name);
-        free(entry);
-        free(stat);
-      }
-
-      // // no need to free because this is coming from argv
-      // free(dir_entries->foldername);
-      free(dir_entries->entries);
-      free(dir_entries);
+      dir_entries_free(dir_entries);
     }
 
     if (results.items[i].filename != NULL) {
