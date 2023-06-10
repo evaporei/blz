@@ -18,3 +18,15 @@ struct ResultList result_list_new() {
   
   return results;
 }
+
+void result_list_grow(struct ResultList *results) {
+  if (results->len >= results->cap) {
+    results->cap *= 2;
+    results->items = realloc(results->items, results->cap * sizeof(struct EntryResult));
+
+    if (results->items == NULL) {
+      perror("blz: memory reallocation error (results.items)");
+      exit(1);
+    }
+  }
+}

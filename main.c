@@ -24,28 +24,11 @@ int compare_entries(const void *a, const void *b) {
 int main(int argc, char* argv[]) {
   struct Args args = parse_args(argc, argv);
 
-  struct ResultList results;
-
-  results.len = 0;
-  results.cap = RESULTS_INIT_CAPACITY;
-  results.items = malloc(results.cap * sizeof(struct EntryResult));
-
-  if (results.items == NULL) {
-    perror("blz: memory allocation error (list.items)");
-    exit(1);
-  }
+  struct ResultList results = result_list_new();
 
   // get the data using sys/lib calls
   for (int i = 0; i < args.folders_len; i++) {
-    if (results.len >= results.cap) {
-      results.cap *= 2;
-      results.items = realloc(results.items, results.cap * sizeof(struct EntryResult));
-
-      if (results.items == NULL) {
-        perror("blz: memory reallocation error (results.items)");
-        exit(1);
-      }
-    }
+    result_list_grow(&results);
 
     if (access(args.foldernames[i], F_OK) != 0) {
       char *msg_template = "blz: cannot access '%s': No such file or directory";

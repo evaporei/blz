@@ -5,4 +5,6 @@
 
 struct ResultList result_list_new();
 
+void result_list_grow(struct ResultList *results);
+
 #endif
