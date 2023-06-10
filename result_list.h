@@ -15,4 +15,6 @@ void result_list_append_filename(struct ResultList *results, char *filename);
 
 void result_list_append_err(struct ResultList *results, struct Error *err);
 
+void result_list_print(struct ResultList results, struct Args args);
+
 #endif
