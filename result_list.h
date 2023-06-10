@@ -9,8 +9,10 @@ struct ResultList result_list_new();
 
 void result_list_grow(struct ResultList *results);
 
-void result_list_append_err(struct ResultList *results, struct Error *err);
+void result_list_append_dir_entries(struct ResultList *results, struct DirEntries *dir_entries);
 
 void result_list_append_filename(struct ResultList *results, char *filename);
+
+void result_list_append_err(struct ResultList *results, struct Error *err);
 
 #endif

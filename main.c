@@ -141,10 +141,7 @@ int main(int argc, char* argv[]) {
     // order/sort entries
     qsort(dir_entries->entries, dir_entries->ent_len, sizeof(struct EntryWithStat), compare_entries);
 
-    results.items[results.len].dir_entries = dir_entries;
-    results.items[results.len].filename = NULL;
-    results.items[results.len].err = NULL;
-    results.len++;
+    result_list_append_dir_entries(&results, dir_entries);
 
     int close_res = closedir(dir);
 

@@ -32,6 +32,13 @@ void result_list_grow(struct ResultList *results) {
   }
 }
 
+void result_list_append_dir_entries(struct ResultList *results, struct DirEntries *dir_entries) {
+  results->items[results->len].dir_entries = dir_entries;
+  results->items[results->len].filename = NULL;
+  results->items[results->len].err = NULL;
+  results->len++;
+}
+
 void result_list_append_filename(struct ResultList *results, char *filename) {
   results->items[results->len].dir_entries = NULL;
   results->items[results->len].filename = malloc(strlen(filename) * sizeof(char));
