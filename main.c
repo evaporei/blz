@@ -300,8 +300,9 @@ int main(int argc, char* argv[]) {
         struct LocalEntry *entry = entry_with_stat->entry;
         struct stat *stat = entry_with_stat->stat;
 
-        free(stat);
+        free(entry->d_name);
         free(entry);
+        free(stat);
       }
 
       free(dir_entries);
