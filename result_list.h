@@ -1,9 +1,24 @@
 #ifndef RESULT_LIST_H
 #define RESULT_LIST_H
 
-#include "types.h"
+#include "cli.h"
+#include "dir_entries.h"
+#include "error.h"
 
 #define RESULTS_INIT_CAPACITY 2
+
+/* either a dir_entries list, a file name or an error */
+struct EntryResult {
+  struct DirEntries *dir_entries;
+  char *filename;
+  struct Error *err;
+};
+
+struct ResultList {
+  struct EntryResult *items;
+  int len;
+  int cap;
+};
 
 struct ResultList result_list_new();
 

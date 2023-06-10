@@ -1,9 +1,18 @@
 #ifndef DIR_ENTRIES_H
 #define DIR_ENTRIES_H
 
-#include "types.h"
+#include "cli.h"
+#include "entry_with_stat.h"
 
 #define ENTRIES_INIT_CAPACITY 16
+
+struct DirEntries {
+  char *foldername;
+  unsigned long long total_blocks;
+  struct EntryWithStat *entries;
+  int ent_len;
+  int ent_cap;
+};
 
 struct DirEntries * dir_entries_new(char *foldername);
 

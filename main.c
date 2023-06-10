@@ -11,7 +11,6 @@
 #include "entry_with_stat.h"
 #include "error.h"
 #include "result_list.h"
-#include "types.h"
 
 int main(int argc, char* argv[]) {
   struct Args args = parse_args(argc, argv);

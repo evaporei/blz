@@ -4,8 +4,6 @@
 #include <sys/stat.h>
 
 #include "dir_entries.h"
-#include "entry_with_stat.h"
-#include "types.h"
 
 struct DirEntries * dir_entries_new(char *foldername) {
   struct DirEntries *dir_entries = malloc(sizeof(struct DirEntries));

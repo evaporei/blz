@@ -2,8 +2,24 @@
 #define ENTRY_WITH_STAT_H
 
 #include <dirent.h>
+#include <sys/stat.h>
 
-#include "types.h"
+// this struct only exists because stupid `readdir`
+// doesn't give owned data to us, only references to
+// static data
+//
+// and since it can do anything with its static data,
+// sometimes this `ls` was printing corrupted file names
+// etc
+struct LocalEntry {
+  unsigned char d_type;
+  char *d_name;
+};
+
+struct EntryWithStat {
+  struct LocalEntry *entry;
+  struct stat *stat; // can be None
+};
 
 struct LocalEntry * entry_new(struct dirent *entry);
 

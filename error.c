@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "types.h"
+#include "error.h"
 
 struct Error * error_new(char *file_or_dir) {
   char *msg_template = "blz: cannot access '%s': No such file or directory";

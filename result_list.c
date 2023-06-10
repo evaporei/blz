@@ -4,7 +4,6 @@
 
 #include "dir_entries.h"
 #include "result_list.h"
-#include "types.h"
 
 struct ResultList result_list_new() {
   struct ResultList results;
