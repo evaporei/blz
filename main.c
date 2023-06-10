@@ -108,7 +108,6 @@ int main(int argc, char* argv[]) {
         perror("blz: failed to get file status (stat)");
         entry_with_stat.stat = NULL;
       } else {
-        dir_entries->total_blocks += (file_stat->st_blocks * 512) / 1024;
         entry_with_stat.stat = file_stat;
       }
 

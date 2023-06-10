@@ -40,6 +40,9 @@ void dir_entries_grow(struct DirEntries *dir_entries) {
 
 void dir_entries_append(struct DirEntries *dir_entries, struct EntryWithStat entry_with_stat) {
   dir_entries->entries[dir_entries->ent_len] = entry_with_stat;
+  if (entry_with_stat.stat != NULL) {
+    dir_entries->total_blocks += (entry_with_stat.stat->st_blocks * 512) / 1024;
+  }
   dir_entries->ent_len++;
 }
 
