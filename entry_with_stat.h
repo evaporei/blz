@@ -13,4 +13,6 @@ struct EntryWithStat entry_with_stat_new(char *arg_foldername, struct dirent *en
 
 int compare_entries(const void *a, const void *b);
 
+void entry_with_stat_print(struct EntryWithStat entry_with_stat, struct Args args);
+
 #endif

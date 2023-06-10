@@ -1,10 +1,7 @@
 #include <dirent.h>
-#include <grp.h>
-#include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-#include <time.h>
 
 #include "dir_entries.h"
 #include "entry_with_stat.h"
@@ -61,87 +58,8 @@ void dir_entries_print(struct DirEntries *dir_entries, struct Args args, int res
 
   for (int j = 0; j < dir_entries->ent_len; j++) {
     struct EntryWithStat entry_with_stat = dir_entries->entries[j];
-    struct LocalEntry *entry = entry_with_stat.entry;
-    struct stat *stat = entry_with_stat.stat;
 
-    if (args.flags.long_list_fmt) {
-      // print file permissions
-      printf(S_ISDIR(stat->st_mode) ? "d" : "-");
-      printf(stat->st_mode & S_IRUSR ? "r" : "-");
-      printf(stat->st_mode & S_IWUSR ? "w" : "-");
-      printf(stat->st_mode & S_IXUSR ? "x" : "-");
-      printf(stat->st_mode & S_IRGRP ? "r" : "-");
-      printf(stat->st_mode & S_IWGRP ? "w" : "-");
-      printf(stat->st_mode & S_IXGRP ? "x" : "-");
-      printf(stat->st_mode & S_IROTH ? "r" : "-");
-      printf(stat->st_mode & S_IWOTH ? "w" : "-");
-      printf(stat->st_mode & S_IXOTH ? "x" : "-");
-      printf(" ");
-
-      // print number of hard links
-      printf("%*lld ", sizeof(stat->st_nlink), stat->st_nlink);
-
-      struct passwd *pwd = getpwuid(stat->st_uid);
-
-      // print user name (owner)
-      if (pwd != NULL) {
-        printf("%s ", pwd->pw_name);
-      } else {
-        printf("(unknown) ");
-      }
-
-      struct group *grp = getgrgid(stat->st_gid);
-
-      // print group name
-      if (grp != NULL) {
-        printf("%s ", grp->gr_name);
-      } else {
-        printf("(unknown) ");
-      }
-
-      // print file size
-      printf("%*lld ", sizeof(stat->st_size), stat->st_size);
-
-      // get and format date of the last modification
-      time_t mod_time = stat->st_mtime;
-      struct tm *time_info = localtime(&mod_time);
-
-      char time_str[20];
-      strftime(time_str, sizeof(time_str), "%b %e %H:%M", time_info);
-
-      // print date of the last modification
-      printf("%s ", time_str);
-    }
-
-    printf("%s", entry->d_name);
-
-    // print file type suffix
-    switch (entry->d_type) {
-      case DT_DIR:
-        printf("/");
-        break;
-      case DT_FIFO:
-        printf("|");
-        break;
-      case DT_LNK:
-        printf("@");
-        break;
-      case DT_REG:
-        // file is executable
-        if (stat->st_mode & S_IXUSR) {
-          printf("*");
-        }
-        break;
-      case DT_SOCK:
-        printf("=");
-        break;
-    }
-
-    if (args.flags.long_list_fmt) {
-      printf("\n");
-    } else {
-      printf(" ");
-    }
+    entry_with_stat_print(entry_with_stat, args);
   }
 
   if (!args.flags.long_list_fmt) {
