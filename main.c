@@ -10,9 +10,9 @@
 #include <unistd.h>
 
 #include "cli.h"
+#include "result_list.h"
 #include "types.h"
 
-#define RESULTS_INIT_CAPACITY 2
 #define ENTRIES_INIT_CAPACITY 16
 
 int compare_entries(const void *a, const void *b) {
