@@ -32,3 +32,8 @@ void dir_entries_grow(struct DirEntries *dir_entries) {
     }
   }
 }
+
+void dir_entries_append(struct DirEntries *dir_entries, struct EntryWithStat entry_with_stat) {
+  dir_entries->entries[dir_entries->ent_len] = entry_with_stat;
+  dir_entries->ent_len++;
+}

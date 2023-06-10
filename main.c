@@ -114,8 +114,7 @@ int main(int argc, char* argv[]) {
 
       free(full_path);
 
-      dir_entries->entries[dir_entries->ent_len] = entry_with_stat;
-      dir_entries->ent_len++;
+      dir_entries_append(dir_entries, entry_with_stat);
     }
 
     // order/sort entries
