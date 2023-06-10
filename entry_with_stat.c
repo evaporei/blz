@@ -43,3 +43,10 @@ struct stat * stat_new(char *full_path) {
 
   return file_stat;
 }
+
+// used for qsort in dir_entries
+int compare_entries(const void *a, const void *b) {
+  struct EntryWithStat *entry_a = (struct EntryWithStat *) a;
+  struct EntryWithStat *entry_b = (struct EntryWithStat *) b;
+  return strcmp(entry_a->entry->d_name, entry_b->entry->d_name);
+}

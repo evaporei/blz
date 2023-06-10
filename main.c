@@ -13,12 +13,6 @@
 #include "string.h"
 #include "types.h"
 
-int compare_entries(const void *a, const void *b) {
-  struct EntryWithStat *entry_a = (struct EntryWithStat *) a;
-  struct EntryWithStat *entry_b = (struct EntryWithStat *) b;
-  return strcmp(entry_a->entry->d_name, entry_b->entry->d_name);
-}
-
 int main(int argc, char* argv[]) {
   struct Args args = parse_args(argc, argv);
 
@@ -79,7 +73,7 @@ int main(int argc, char* argv[]) {
     }
 
     // order/sort entries
-    qsort(dir_entries->entries, dir_entries->ent_len, sizeof(struct EntryWithStat), compare_entries);
+    dir_entries_sort(dir_entries);
 
     result_list_append_dir_entries(&results, dir_entries);
 

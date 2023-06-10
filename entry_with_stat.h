@@ -9,4 +9,6 @@ struct LocalEntry * entry_new(struct dirent *entry);
 
 struct stat * stat_new(char *full_path);
 
+int compare_entries(const void *a, const void *b);
+
 #endif

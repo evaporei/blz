@@ -7,6 +7,7 @@
 #include <time.h>
 
 #include "dir_entries.h"
+#include "entry_with_stat.h"
 #include "types.h"
 
 struct DirEntries * dir_entries_new(char *foldername) {
@@ -44,6 +45,10 @@ void dir_entries_append(struct DirEntries *dir_entries, struct EntryWithStat ent
     dir_entries->total_blocks += (entry_with_stat.stat->st_blocks * 512) / 1024;
   }
   dir_entries->ent_len++;
+}
+
+void dir_entries_sort(struct DirEntries *dir_entries) {
+  qsort(dir_entries->entries, dir_entries->ent_len, sizeof(struct EntryWithStat), compare_entries);
 }
 
 void dir_entries_print(struct DirEntries *dir_entries, struct Args args, int result_list_len) {
