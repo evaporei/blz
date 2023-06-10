@@ -186,6 +186,9 @@ void result_list_free(struct ResultList results) {
         free(stat);
       }
 
+      // // no need to free because this is coming from argv
+      // free(dir_entries->foldername);
+      free(dir_entries->entries);
       free(dir_entries);
     }
 
