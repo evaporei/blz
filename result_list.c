@@ -177,9 +177,9 @@ void result_list_free(struct ResultList results) {
       struct DirEntries *dir_entries = results.items[i].dir_entries;
 
       for (int j = 0; j < dir_entries->ent_len; j++) {
-        struct EntryWithStat *entry_with_stat = &(dir_entries->entries[j]);
-        struct LocalEntry *entry = entry_with_stat->entry;
-        struct stat *stat = entry_with_stat->stat;
+        struct EntryWithStat entry_with_stat = dir_entries->entries[j];
+        struct LocalEntry *entry = entry_with_stat.entry;
+        struct stat *stat = entry_with_stat.stat;
 
         free(entry->d_name);
         free(entry);

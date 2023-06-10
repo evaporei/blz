@@ -59,6 +59,8 @@ int main(int argc, char* argv[]) {
         continue;
       }
 
+      struct EntryWithStat entry_with_stat;
+
       // copy entry data to avoid corruption issues
       struct LocalEntry *local_entry = malloc(sizeof(struct LocalEntry));
 
@@ -67,7 +69,7 @@ int main(int argc, char* argv[]) {
       strcpy(local_entry->d_name, entry->d_name);
       local_entry->d_name[strlen(entry->d_name)] = '\0';
 
-      dir_entries->entries[dir_entries->ent_len].entry = local_entry;
+      entry_with_stat.entry = local_entry;
 
       char *full_path;
 
@@ -104,14 +106,15 @@ int main(int argc, char* argv[]) {
 
       if (stat(full_path, file_stat) != 0) {
         perror("blz: failed to get file status (stat)");
-        dir_entries->entries[dir_entries->ent_len].stat = NULL;
+        entry_with_stat.stat = NULL;
       } else {
         dir_entries->total_blocks += (file_stat->st_blocks * 512) / 1024;
-        dir_entries->entries[dir_entries->ent_len].stat = file_stat;
+        entry_with_stat.stat = file_stat;
       }
 
       free(full_path);
 
+      dir_entries->entries[dir_entries->ent_len] = entry_with_stat;
       dir_entries->ent_len++;
     }
 
