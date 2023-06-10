@@ -72,7 +72,6 @@ int main(int argc, char* argv[]) {
       dir_entries_append(dir_entries, entry_with_stat);
     }
 
-    // order/sort entries
     dir_entries_sort(dir_entries);
 
     result_list_append_dir_entries(&results, dir_entries);
@@ -84,9 +83,7 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  // print gathered data
   result_list_print(results, args);
 
-  // free data
   result_list_free(results);
 }
