@@ -1,6 +1,7 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -20,7 +21,17 @@ int main(int argc, char* argv[]) {
     result_list_grow(&results);
 
     if (access(args.foldernames[i], F_OK) != 0) {
-      struct Error *err = error_new(args.foldernames[i]);
+      char *msg_template = "blz: cannot access '%s': No such file or directory";
+      char *msg = malloc((strlen(msg_template) + strlen(args.foldernames[i]) - 1) * sizeof(char));
+
+      if (msg == NULL) {
+        perror("blz: memory allocation error (msg)");
+        exit(1);
+      }
+
+      sprintf(msg, msg_template, args.foldernames[i]);
+
+      struct Error *err = error_new(msg, NoEntity);
 
       result_list_append_err(&results, err);
 

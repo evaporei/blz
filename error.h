@@ -10,6 +10,6 @@ struct Error {
   enum ErrKind kind;
 };
 
-struct Error * error_new(char *file_or_dir);
+struct Error * error_new(char *msg, enum ErrKind kind);
 
 #endif
