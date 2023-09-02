@@ -1,8 +1,6 @@
 # blz
 
-Better Ls and Zicaaaaa.
-
-For computer science class.
+`ls` clone for CS class.
 
 - [x] add proper suffix for each file type (`*`, `/`, `@`, `|`, `=`)
 - [x] add support for multiple folders (`foo: ...\n bar: ...`)
