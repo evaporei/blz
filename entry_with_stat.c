@@ -9,7 +9,7 @@
 
 #include "args.h"
 #include "entry_with_stat.h"
-#include "string.h"
+#include "str.h"
 
 // copy entry data to avoid corruption issues
 //

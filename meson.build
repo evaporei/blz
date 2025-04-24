@@ -7,6 +7,6 @@ srcs = files(
   'error.c',
   'main.c',
   'result_list.c',
-  'string.c')
+  'str.c')
 
 executable('blz', srcs)

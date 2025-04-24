@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "str.h"
+
 // concatenate paths
 // eg:
 // - "/home/rei/" + "ssba" = "/home/rei/ssba"
